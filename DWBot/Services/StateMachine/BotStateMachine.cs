@@ -11,7 +11,12 @@ internal class BotStateMachine
         Condition = new StartState();
     }
 
-    private void TransitionTo(BotStates trigger)
+    public BotStateMachine(BaseState state)
+    {
+        Condition = state;
+    }
+
+    public void MoveTo(BotStates trigger)
     {
         if (!Condition.Transitions.Contains(trigger))
             return;

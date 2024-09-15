@@ -1,4 +1,7 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using DWBot.Data.Repositories;
+using DWBot.Services.StateMachine;
+using DWBot.Services.StateMachine.States;
+using Microsoft.Extensions.Logging;
 using Telegram.Bot;
 using Telegram.Bot.Exceptions;
 using Telegram.Bot.Polling;
@@ -9,15 +12,17 @@ using Telegram.Bot.Types.ReplyMarkups;
 
 namespace DWBot.Services;
 
-public class UpdateHandler : IUpdateHandler
+internal class UpdateHandler : IUpdateHandler
 {
     private readonly ITelegramBotClient _botClient;
     private readonly ILogger<UpdateHandler> _logger;
+    private readonly IStateRepository _stateRepository;
 
-    public UpdateHandler(ITelegramBotClient botClient, ILogger<UpdateHandler> logger)
+    public UpdateHandler(ITelegramBotClient botClient, ILogger<UpdateHandler> logger, IStateRepository stateRepository)
     {
         _botClient = botClient;
         _logger = logger;
+        _stateRepository = stateRepository;
     }
 
     public async Task HandleUpdateAsync(ITelegramBotClient _, Update update, CancellationToken cancellationToken)
@@ -40,6 +45,15 @@ public class UpdateHandler : IUpdateHandler
         _logger.LogInformation("Receive message type: {MessageType}", message.Type);
         if (message.Text is not { } messageText)
             return;
+
+        var command = messageText.Split(' ')[0];
+        // var trigger = GetTrigger(command);
+        // var state = await _stateRepository.GetUserStateAsync(message.From?.Id);
+        var trigger = GetTrigger_Enum(command);             //TODO: should be removed
+        var state = BotStateConfiguration.States[trigger];  //TODO: should be removed
+        //await _stateRepository.SetUserStateAsync(message.From?.Id, state);
+        var stateMachine = new BotStateMachine(state);
+        stateMachine.MoveTo(trigger);
 
         var action = messageText.Split(' ')[0] switch
         {
@@ -186,6 +200,51 @@ public class UpdateHandler : IUpdateHandler
         {
             throw new IndexOutOfRangeException();
         }
+    }
+
+    private BaseState GetTrigger(string command)
+    {
+        BaseState trigger = command switch
+        {
+            "/start" => new StartState(),
+            "/development" => new SoftwareDevelopmentState(),
+            "/consulting" => new ConsultingState(),
+            "/support" => new SupportState(),
+            "/faq" => new FAQState(),
+            "/web" => new WebState(),
+            "/desktop" => new DesktopState(),
+            "/bots" => new BotsState(),
+            "/automation" => new AutomationState(),
+            "/manager" => new ChatWithManagerState(),
+            "/apply" => new ApplyState(),
+            "/back" => new StartState(),
+            _ => new StartState()
+        };
+
+        return trigger;
+    }
+
+    //should be removed
+    private BotStates GetTrigger_Enum(string command)
+    {
+        BotStates trigger = command switch
+        {
+            "/start" => BotStates.Start,
+            "/development" => BotStates.Start,
+            "/consulting" => BotStates.Start,
+            "/support" => BotStates.Support,
+            "/faq" => BotStates.FAQ,
+            "/web" => BotStates.Web,
+            "/desktop" => BotStates.Desktop,
+            "/bots" => BotStates.Bots,
+            "/automation" => BotStates.Automation,
+            "/manager" => BotStates.ChatWithManager,
+            "/apply" => BotStates.ApplicationForm,
+            "/back" => BotStates.Start,
+            _ => BotStates.Start
+        };
+
+        return trigger;
     }
 
     public async Task HandlePollingErrorAsync(ITelegramBotClient botClient, Exception exception, CancellationToken cancellationToken)
