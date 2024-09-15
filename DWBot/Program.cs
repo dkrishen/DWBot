@@ -4,6 +4,7 @@ using Microsoft.Extensions.Hosting;
 using Telegram.Bot;
 using DWBot.Infrastructure.Extensions;
 using DWBot.Services;
+using DWBot.Data.Repositories;
 
 IHost host = Host.CreateDefaultBuilder(args)
     .ConfigureServices((context, services) =>
@@ -27,6 +28,10 @@ IHost host = Host.CreateDefaultBuilder(args)
 
         services.AddScoped<UpdateHandler>();
         services.AddScoped<ReceiverService>();
+
+        //services.AddScoped<IStateRepository, StateRepository>();
+        services.AddSingleton<IStateRepository, InMemoryStateRepository>();
+
         services.AddHostedService<PollingService>();
     })
     .Build();
