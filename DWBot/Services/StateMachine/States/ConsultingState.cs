@@ -24,7 +24,6 @@ internal class ConsultingState : BaseState
 
     public override void OnEntry()
     {
-        HelpingState = this;
         base.OnEntry();
     }
 }

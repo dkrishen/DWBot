@@ -24,7 +24,6 @@ internal class BotsState : BaseState
 
     public override void OnEntry()
     {
-        HelpingState = this;
         base.OnEntry();
     }
 }

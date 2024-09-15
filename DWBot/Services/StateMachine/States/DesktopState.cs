@@ -24,7 +24,6 @@ internal class DesktopState : BaseState
 
     public override void OnEntry()
     {
-        HelpingState = this;
         base.OnEntry();
     }
 }

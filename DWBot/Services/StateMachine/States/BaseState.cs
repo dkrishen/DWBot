@@ -7,7 +7,6 @@ internal abstract class BaseState
     public readonly HashSet<BotStates> Transitions;
     public abstract BotStates State { get; }
 
-    protected BaseState HelpingState { get; set; }
     protected StateConfig Config { get; }
     protected abstract HashSet<BotStates> GetTransitions();
     protected abstract StateConfig GetConfig();
@@ -16,6 +15,5 @@ internal abstract class BaseState
     {
         Transitions = GetTransitions();
         Config = GetConfig();
-        HelpingState = null;
     }
 }

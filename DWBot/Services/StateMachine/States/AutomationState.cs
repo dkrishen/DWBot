@@ -24,7 +24,6 @@ internal class AutomationState : BaseState
 
     public override void OnEntry()
     {
-        HelpingState = this;
         base.OnEntry();
     }
 }

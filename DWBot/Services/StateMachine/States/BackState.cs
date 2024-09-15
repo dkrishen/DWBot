@@ -22,7 +22,6 @@ internal class BackState : BaseState
 
     public override void OnExit()
     {
-        HelpingState = null;
         base.OnExit();
     }
 }

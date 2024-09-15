@@ -22,7 +22,6 @@ internal class ChatWithManagerState : BaseState
 
     public override void OnExit()
     {
-        HelpingState = null;
         base.OnExit();
 
         // redirect to chat
