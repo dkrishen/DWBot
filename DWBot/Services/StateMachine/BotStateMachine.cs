@@ -4,7 +4,7 @@ namespace DWBot.Services.StateMachine;
 
 internal class BotStateMachine
 {
-    private BaseState Condition;
+    public BaseState Condition { get; private set; }
 
     public BotStateMachine()
     {
@@ -16,16 +16,20 @@ internal class BotStateMachine
         Condition = state;
     }
 
-    public void MoveTo(BotStates trigger)
+    public bool MoveTo(BotStates trigger)
     {
         if (!Condition.Transitions.Contains(trigger))
-            return;
+            return false;
 
         if (BotStateConfiguration.States.TryGetValue(trigger, out var nextState))
         {
             Condition.OnExit();
             Condition = nextState;
             Condition.OnEntry();
+
+            return true;
         }
+
+        return false;
     }
 }

@@ -5,19 +5,18 @@ using Telegram.Bot;
 using DWBot.Infrastructure.Extensions;
 using DWBot.Services;
 using DWBot.Data.Repositories;
+using Microsoft.Extensions.Configuration;
 
 IHost host = Host.CreateDefaultBuilder(args)
+    .ConfigureAppConfiguration((context, configBuilder) =>
+    {
+        configBuilder.AddJsonFile("appsetting.json");
+    })
     .ConfigureServices((context, services) =>
     {
-        // Register Bot configuration
         services.Configure<BotConfiguration>(
             context.Configuration.GetSection(BotConfiguration.Configuration));
 
-        // Register named HttpClient to benefits from IHttpClientFactory
-        // and consume it with ITelegramBotClient typed client.
-        // More read:
-        //  https://docs.microsoft.com/en-us/aspnet/core/fundamentals/http-requests?view=aspnetcore-5.0#typed-clients
-        //  https://docs.microsoft.com/en-us/dotnet/architecture/microservices/implement-resilient-applications/use-httpclientfactory-to-implement-resilient-http-requests
         services.AddHttpClient("telegram_bot_client")
                 .AddTypedClient<ITelegramBotClient>((httpClient, sp) =>
                 {

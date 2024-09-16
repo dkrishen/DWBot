@@ -27,17 +27,76 @@ internal class UpdateHandler : IUpdateHandler
 
     public async Task HandleUpdateAsync(ITelegramBotClient _, Update update, CancellationToken cancellationToken)
     {
+        //var handler = update switch
+        //{
+        //    { Message: { } message } => BotOnMessageReceived(message, cancellationToken),
+        //    { EditedMessage: { } message } => BotOnMessageReceived(message, cancellationToken),
+        //    { CallbackQuery: { } callbackQuery } => BotOnCallbackQueryReceived(callbackQuery, cancellationToken),
+        //    { InlineQuery: { } inlineQuery } => BotOnInlineQueryReceived(inlineQuery, cancellationToken),
+        //    { ChosenInlineResult: { } chosenInlineResult } => BotOnChosenInlineResultReceived(chosenInlineResult, cancellationToken),
+        //    _ => UnknownUpdateHandlerAsync(update, cancellationToken)
+        //};
         var handler = update switch
         {
-            { Message: { } message } => BotOnMessageReceived(message, cancellationToken),
-            { EditedMessage: { } message } => BotOnMessageReceived(message, cancellationToken),
-            { CallbackQuery: { } callbackQuery } => BotOnCallbackQueryReceived(callbackQuery, cancellationToken),
-            { InlineQuery: { } inlineQuery } => BotOnInlineQueryReceived(inlineQuery, cancellationToken),
-            { ChosenInlineResult: { } chosenInlineResult } => BotOnChosenInlineResultReceived(chosenInlineResult, cancellationToken),
+            { Message: { } message } => HandleMessage(message, cancellationToken),
+            { CallbackQuery: { } callbackQuery } => HandleQuery(callbackQuery, cancellationToken),
             _ => UnknownUpdateHandlerAsync(update, cancellationToken)
         };
 
         await handler;
+    }
+
+    private async Task HandleMessage(Message message, CancellationToken cancellationToken)
+    {
+        var command = message.Text.Split(' ')[0];
+        await GoFLow(command, message.From?.Id ?? 0, cancellationToken);
+    }
+
+    private async Task HandleQuery(CallbackQuery query, CancellationToken cancellationToken)
+    {
+        var command = query.Data.Split(' ')[0];
+        await GoFLow(command, query.From?.Id ?? 0, cancellationToken);
+    }
+
+    private async Task GoFLow(string message, long chatId, CancellationToken cancellationToken)
+    {
+        if (message is not { } messageText)
+            return;
+
+        // var trigger = GetTrigger(command);
+        // var state = await _stateRepository.GetUserStateAsync(message.From?.Id);
+        var trigger = GetTrigger_Enum(message);             //TODO: should be removed
+        var currentState = await _stateRepository.GetUserStateAsync(chatId);
+        var triggerState = BotStateConfiguration.States[trigger];  //TODO: should be removed
+        //await await _stateRepository.SetUserStateAsync(message.From?.Id, state);
+        var stateMachine = new BotStateMachine(currentState);
+        var isStateUpdated = stateMachine.MoveTo(trigger);
+        if (isStateUpdated)
+        {
+            await _stateRepository.SetUserStateAsync(chatId, triggerState);
+
+            var menu = stateMachine.Condition.GetMenu();
+            var buttons = menu.Select(option => new List<InlineKeyboardButton>() { InlineKeyboardButton.WithCallbackData(option, $"/{option}") }).ToList();
+            var keyboard = new InlineKeyboardMarkup(buttons);
+
+            await _botClient.SendTextMessageAsync(
+                chatId,
+                text: stateMachine.Condition.GetMessage(),
+                cancellationToken: cancellationToken);
+
+            await _botClient.SendTextMessageAsync(
+                chatId,
+                text: "Choose",
+                replyMarkup: keyboard,
+                cancellationToken: cancellationToken);
+        }
+        else
+        {
+            await _botClient.SendTextMessageAsync(
+                chatId,
+                text: "sorry, i don't know what to do...",
+                cancellationToken: cancellationToken);
+        }
     }
 
     private async Task BotOnMessageReceived(Message message, CancellationToken cancellationToken)
@@ -45,15 +104,6 @@ internal class UpdateHandler : IUpdateHandler
         _logger.LogInformation("Receive message type: {MessageType}", message.Type);
         if (message.Text is not { } messageText)
             return;
-
-        var command = messageText.Split(' ')[0];
-        // var trigger = GetTrigger(command);
-        // var state = await _stateRepository.GetUserStateAsync(message.From?.Id);
-        var trigger = GetTrigger_Enum(command);             //TODO: should be removed
-        var state = BotStateConfiguration.States[trigger];  //TODO: should be removed
-        //await _stateRepository.SetUserStateAsync(message.From?.Id, state);
-        var stateMachine = new BotStateMachine(state);
-        stateMachine.MoveTo(trigger);
 
         var action = messageText.Split(' ')[0] switch
         {
@@ -218,7 +268,7 @@ internal class UpdateHandler : IUpdateHandler
             "/manager" => new ChatWithManagerState(),
             "/apply" => new ApplyState(),
             "/back" => new StartState(),
-            _ => new StartState()
+            _ => new NoneState()
         };
 
         return trigger;
@@ -227,7 +277,7 @@ internal class UpdateHandler : IUpdateHandler
     //should be removed
     private BotStates GetTrigger_Enum(string command)
     {
-        BotStates trigger = command switch
+        BotStates trigger = command.Trim().ToLower() switch
         {
             "/start" => BotStates.Start,
             "/development" => BotStates.Start,
@@ -241,7 +291,7 @@ internal class UpdateHandler : IUpdateHandler
             "/manager" => BotStates.ChatWithManager,
             "/apply" => BotStates.ApplicationForm,
             "/back" => BotStates.Start,
-            _ => BotStates.Start
+            _ => BotStates.None
         };
 
         return trigger;

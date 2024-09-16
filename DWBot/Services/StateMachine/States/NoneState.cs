@@ -1,12 +1,12 @@
 ﻿namespace DWBot.Services.StateMachine.States;
 
-internal class StartState : BaseState
+internal class NoneState : BaseState
 {
     public override BotStates State { get => BotStates.Start; }
 
     protected override StateConfig GetConfig()
     {
-        var config = new StateConfig("Hellooo!");
+        var config = new StateConfig("none");
         return config;
     }
 
@@ -14,10 +14,7 @@ internal class StartState : BaseState
     {
         var transitions = new HashSet<BotStates>()
         {
-            BotStates.SoftwareDevelopment,
-            BotStates.Consulting,
-            BotStates.Support,
-            BotStates.FAQ
+            BotStates.Start
         };
 
         return transitions;

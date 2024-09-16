@@ -10,8 +10,9 @@ internal class InMemoryStateRepository : IStateRepository
     {
         if(data.Keys.Contains(userId))
             data[userId] = state;
+        else
+            data.Add(userId, state);
 
-        data.Add(userId, state);
         return Task.CompletedTask;
     }
 
@@ -20,6 +21,6 @@ internal class InMemoryStateRepository : IStateRepository
         if (data.Keys.Contains(userId))
             return Task.FromResult(data[userId]);
 
-        throw new ArgumentOutOfRangeException();
+        return Task.FromResult<BaseState>(new NoneState());
     }
 }

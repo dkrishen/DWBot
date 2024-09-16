@@ -6,7 +6,7 @@ internal class SupportState : BaseState
 
     protected override StateConfig GetConfig()
     {
-        var config = new StateConfig("support");
+        var config = new StateConfig("We can help you with supporting of your app!");
         return config;
     }
 
