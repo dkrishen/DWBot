@@ -1,11 +1,11 @@
-﻿using DWBot.Models;
+﻿using DWBot.Data.Repositories;
+using DWBot.Infrastructure.Extensions;
+using DWBot.Models;
+using DWBot.Services;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Telegram.Bot;
-using DWBot.Infrastructure.Extensions;
-using DWBot.Services;
-using DWBot.Data.Repositories;
-using Microsoft.Extensions.Configuration;
 
 IHost host = Host.CreateDefaultBuilder(args)
     .ConfigureAppConfiguration((context, configBuilder) =>
@@ -36,5 +36,3 @@ IHost host = Host.CreateDefaultBuilder(args)
     .Build();
 
 await host.RunAsync();
-
-

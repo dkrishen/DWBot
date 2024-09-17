@@ -1,23 +1,15 @@
 ﻿namespace DWBot.Services.StateMachine.States;
 
-internal class FAQState : BaseState
+internal sealed class FAQState : BaseState
 {
-    public override BotStates State => BotStates.FAQ;
+    public override string Description => "fack you";
 
-    protected override StateConfig GetConfig()
-    {
-        var config = new StateConfig("fack you");
-        return config;
-    }
+    protected override IEnumerable<Type> GetTransitions() =>
+    [
+        typeof(QuestionState),
+        typeof(BackState),
+    ];
 
-    protected override HashSet<BotStates> GetTransitions()
-    {
-        var transitions = new HashSet<BotStates>()
-        {
-            BotStates.Question,
-            BotStates.Back
-        };
-
-        return transitions;
-    }
+    public override void OnEntry() { }
+    public override void OnExit() { }
 }

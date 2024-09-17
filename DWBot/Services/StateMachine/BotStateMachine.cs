@@ -2,34 +2,32 @@
 
 namespace DWBot.Services.StateMachine;
 
-internal class BotStateMachine
+internal sealed class BotStateMachine
 {
-    public BaseState Condition { get; private set; }
+    public BaseState CurrentState { get; private set; }
 
     public BotStateMachine()
     {
-        Condition = new StartState();
+        CurrentState = new StartState();
     }
 
     public BotStateMachine(BaseState state)
     {
-        Condition = state;
+        CurrentState = state;
     }
 
-    public bool MoveTo(BotStates trigger)
+    public bool MoveTo(Type target)
     {
-        if (!Condition.Transitions.Contains(trigger))
+        if (target is null || !target.IsSubclassOf(typeof(BaseState)))
             return false;
 
-        if (BotStateConfiguration.States.TryGetValue(trigger, out var nextState))
-        {
-            Condition.OnExit();
-            Condition = nextState;
-            Condition.OnEntry();
+        var newStateObject = Activator.CreateInstance(target)
+            ?? throw new Exception("Unable to create an instance of the state");
 
-            return true;
-        }
+        CurrentState.OnExit();
+        CurrentState = (BaseState)newStateObject;
+        CurrentState.OnEntry();
 
-        return false;
+        return true;
     }
 }

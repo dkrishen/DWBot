@@ -1,27 +1,14 @@
 ﻿namespace DWBot.Services.StateMachine.States;
 
-internal class BackState : BaseState
+internal sealed class BackState : BaseState
 {
-    public override BotStates State => BotStates.Back;
+    public override string Description => "back";
 
-    protected override StateConfig GetConfig()
-    {
-        var config = new StateConfig("back");
-        return config;
-    }
+    protected override IEnumerable<Type> GetTransitions() =>
+    [
+        typeof(StartState),
+    ];
 
-    protected override HashSet<BotStates> GetTransitions()
-    {
-        var transitions = new HashSet<BotStates>()
-        {
-            BotStates.Start
-        };
-
-        return transitions;
-    }
-
-    public override void OnExit()
-    {
-        base.OnExit();
-    }
+    public override void OnEntry() { }
+    public override void OnExit() { }
 }

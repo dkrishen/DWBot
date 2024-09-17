@@ -1,22 +1,14 @@
 ﻿namespace DWBot.Services.StateMachine.States;
 
-internal class ApplyState : BaseState
+internal sealed class ApplyState : BaseState
 {
-    public override BotStates State => BotStates.Apply;
+    public override string Description => "apply";
 
-    protected override StateConfig GetConfig()
-    {
-        var config = new StateConfig("apply");
-        return config;
-    }
+    protected override IEnumerable<Type> GetTransitions() =>
+    [
+        typeof(ApplicationFormState),
+    ];
 
-    protected override HashSet<BotStates> GetTransitions()
-    {
-        var transitions = new HashSet<BotStates>()
-        {
-            BotStates.ApplicationForm
-        };
-
-        return transitions;
-    }
+    public override void OnEntry() { }
+    public override void OnExit() { }
 }

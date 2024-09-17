@@ -8,7 +8,7 @@ internal class InMemoryStateRepository : IStateRepository
 
     public Task SetUserStateAsync(long userId, BaseState state)
     {
-        if(data.Keys.Contains(userId))
+        if (data.Keys.Contains(userId))
             data[userId] = state;
         else
             data.Add(userId, state);

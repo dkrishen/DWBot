@@ -2,32 +2,35 @@
 
 internal abstract class BaseState
 {
-    public virtual void OnEntry() { }
-    public virtual void OnExit() { }
-    public readonly HashSet<BotStates> Transitions;
-    public abstract BotStates State { get; }
+    public HashSet<Type> Transitions { get; } = [];
+    public abstract string Description { get; }
 
-    protected StateConfig Config { get; }
-    protected abstract HashSet<BotStates> GetTransitions();
-    protected abstract StateConfig GetConfig();
- 
     public BaseState()
     {
-        Transitions = GetTransitions();
-        Config = GetConfig();
+        foreach (var stateType in GetTransitions())
+        {
+            if (stateType is null)
+                throw new Exception("Unable to register state type. It is null");
+
+            if (!stateType.IsSubclassOf(typeof(BaseState)))
+                throw new Exception($"Provided type is not a type of state. Type: {stateType.FullName}");
+
+            Transitions.Add(stateType);
+        }
     }
+
+    public abstract void OnEntry();
+    public abstract void OnExit();
+    protected abstract IEnumerable<Type> GetTransitions();
 
     public List<string> GetMenu()
     {
         var list = Transitions
-            .Select(transition => Enum.GetName(transition))
+            .Select(stateType => stateType.Name.Replace("State", ""))
             .ToList();
 
         return list;
     }
 
-    public string GetMessage()
-    {
-        return Config.Description;
-    }
+    public string GetMessage() => Description;
 }

@@ -1,6 +1,5 @@
 ﻿using DWBot.Data.Repositories;
 using DWBot.Services.StateMachine;
-using DWBot.Services.StateMachine.States;
 using Microsoft.Extensions.Logging;
 using Telegram.Bot;
 using Telegram.Bot.Exceptions;
@@ -63,25 +62,23 @@ internal class UpdateHandler : IUpdateHandler
         if (message is not { } messageText)
             return;
 
-        // var trigger = GetTrigger(command);
-        // var state = await _stateRepository.GetUserStateAsync(message.From?.Id);
-        var trigger = GetTrigger_Enum(message);             //TODO: should be removed
+        var newState = CommandMapper.MapToState(message);
+        //var state = await _stateRepository.GetUserStateAsync(message.From?.Id);
         var currentState = await _stateRepository.GetUserStateAsync(chatId);
-        var triggerState = BotStateConfiguration.States[trigger];  //TODO: should be removed
         //await await _stateRepository.SetUserStateAsync(message.From?.Id, state);
         var stateMachine = new BotStateMachine(currentState);
-        var isStateUpdated = stateMachine.MoveTo(trigger);
+        var isStateUpdated = stateMachine.MoveTo(newState);
         if (isStateUpdated)
         {
-            await _stateRepository.SetUserStateAsync(chatId, triggerState);
+            await _stateRepository.SetUserStateAsync(chatId, stateMachine.CurrentState);
 
-            var menu = stateMachine.Condition.GetMenu();
+            var menu = stateMachine.CurrentState.GetMenu();
             var buttons = menu.Select(option => new List<InlineKeyboardButton>() { InlineKeyboardButton.WithCallbackData(option, $"/{option}") }).ToList();
             var keyboard = new InlineKeyboardMarkup(buttons);
 
             await _botClient.SendTextMessageAsync(
                 chatId,
-                text: stateMachine.Condition.GetMessage(),
+                text: stateMachine.CurrentState.GetMessage(),
                 cancellationToken: cancellationToken);
 
             await _botClient.SendTextMessageAsync(
@@ -250,51 +247,6 @@ internal class UpdateHandler : IUpdateHandler
         {
             throw new IndexOutOfRangeException();
         }
-    }
-
-    private BaseState GetTrigger(string command)
-    {
-        BaseState trigger = command switch
-        {
-            "/start" => new StartState(),
-            "/development" => new SoftwareDevelopmentState(),
-            "/consulting" => new ConsultingState(),
-            "/support" => new SupportState(),
-            "/faq" => new FAQState(),
-            "/web" => new WebState(),
-            "/desktop" => new DesktopState(),
-            "/bots" => new BotsState(),
-            "/automation" => new AutomationState(),
-            "/manager" => new ChatWithManagerState(),
-            "/apply" => new ApplyState(),
-            "/back" => new StartState(),
-            _ => new NoneState()
-        };
-
-        return trigger;
-    }
-
-    //should be removed
-    private BotStates GetTrigger_Enum(string command)
-    {
-        BotStates trigger = command.Trim().ToLower() switch
-        {
-            "/start" => BotStates.Start,
-            "/development" => BotStates.Start,
-            "/consulting" => BotStates.Start,
-            "/support" => BotStates.Support,
-            "/faq" => BotStates.FAQ,
-            "/web" => BotStates.Web,
-            "/desktop" => BotStates.Desktop,
-            "/bots" => BotStates.Bots,
-            "/automation" => BotStates.Automation,
-            "/manager" => BotStates.ChatWithManager,
-            "/apply" => BotStates.ApplicationForm,
-            "/back" => BotStates.Start,
-            _ => BotStates.None
-        };
-
-        return trigger;
     }
 
     public async Task HandlePollingErrorAsync(ITelegramBotClient botClient, Exception exception, CancellationToken cancellationToken)

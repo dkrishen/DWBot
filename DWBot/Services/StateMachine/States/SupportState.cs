@@ -1,29 +1,16 @@
 ﻿namespace DWBot.Services.StateMachine.States;
 
-internal class SupportState : BaseState
+internal sealed class SupportState : BaseState
 {
-    public override BotStates State => BotStates.Support;
+    public override string Description => "We can help you with supporting of your app!";
 
-    protected override StateConfig GetConfig()
-    {
-        var config = new StateConfig("We can help you with supporting of your app!");
-        return config;
-    }
+    protected override IEnumerable<Type> GetTransitions() =>
+    [
+        typeof(ChatWithManagerState),
+        typeof(ApplyState),
+        typeof(BackState),
+    ];
 
-    protected override HashSet<BotStates> GetTransitions()
-    {
-        var transitions = new HashSet<BotStates>()
-        {
-            BotStates.ChatWithManager,
-            BotStates.Apply,
-            BotStates.Back,
-        };
-
-        return transitions;
-    }
-
-    public override void OnEntry()
-    {
-        base.OnEntry();
-    }
+    public override void OnEntry() { }
+    public override void OnExit() { }
 }
