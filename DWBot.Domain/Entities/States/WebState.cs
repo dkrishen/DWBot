@@ -1,6 +1,6 @@
-﻿namespace DWBot.Services.StateMachine.States;
+﻿namespace DWBot.Domain.Entities.States;
 
-internal sealed class WebState : BaseState
+public sealed class WebState : BaseState
 {
     public override string Description => "web";
 

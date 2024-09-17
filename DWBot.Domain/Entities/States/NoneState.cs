@@ -1,8 +1,8 @@
-﻿namespace DWBot.Services.StateMachine.States;
+﻿namespace DWBot.Domain.Entities.States;
 
-internal sealed class BackState : BaseState
+public sealed class NoneState : BaseState
 {
-    public override string Description => "back";
+    public override string Description => "none";
 
     protected override IEnumerable<Type> GetTransitions() =>
     [

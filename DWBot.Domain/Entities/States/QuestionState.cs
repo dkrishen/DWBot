@@ -1,6 +1,6 @@
-﻿namespace DWBot.Services.StateMachine.States;
+﻿namespace DWBot.Domain.Entities.States;
 
-internal sealed class QuestionState : BaseState
+public sealed class QuestionState : BaseState
 {
     public override string Description => "question";
 

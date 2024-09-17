@@ -1,6 +1,6 @@
-﻿namespace DWBot.Services.StateMachine.States;
+﻿namespace DWBot.Domain.Entities.States;
 
-internal sealed class StartState : BaseState
+public sealed class StartState : BaseState
 {
     public override string Description => "Hellooo!";
 

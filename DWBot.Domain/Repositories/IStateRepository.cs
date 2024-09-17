@@ -1,8 +1,8 @@
-﻿using DWBot.Services.StateMachine.States;
+﻿using DWBot.Domain.Entities.States;
 
-namespace DWBot.Data.Repositories;
+namespace DWBot.Domain.Repositories;
 
-internal interface IStateRepository
+public interface IStateRepository
 {
     Task SetUserStateAsync(long userId, BaseState state);
     public Task<BaseState> GetUserStateAsync(long userId);

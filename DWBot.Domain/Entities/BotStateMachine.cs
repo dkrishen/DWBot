@@ -1,8 +1,8 @@
-﻿using DWBot.Services.StateMachine.States;
+﻿using DWBot.Domain.Entities.States;
 
-namespace DWBot.Services.StateMachine;
+namespace DWBot.Domain.Entities;
 
-internal sealed class BotStateMachine
+public sealed class BotStateMachine
 {
     public BaseState CurrentState { get; private set; }
 

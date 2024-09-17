@@ -19,9 +19,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Data\Entities\" />
-    <Folder Include="Data\Configurations\" />
-    <Folder Include="Data\Migrations\" />
+    <ProjectReference Include="..\DWBot.Data\DWBot.Data.csproj" />
+    <ProjectReference Include="..\DWBot.Domain\DWBot.Domain.csproj" />
+    <ProjectReference Include="..\DWBot.Infrastructure\DWBot.Infrastructure.csproj" />
   </ItemGroup>
 
   <ItemGroup>

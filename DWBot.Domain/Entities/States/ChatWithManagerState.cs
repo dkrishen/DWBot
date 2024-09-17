@@ -1,6 +1,6 @@
-﻿namespace DWBot.Services.StateMachine.States;
+﻿namespace DWBot.Domain.Entities.States;
 
-internal sealed class ChatWithManagerState : BaseState
+public sealed class ChatWithManagerState : BaseState
 {
     public override string Description => "chat with manager";
 

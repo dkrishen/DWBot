@@ -1,8 +1,9 @@
-﻿using DWBot.Services.StateMachine.States;
+﻿using DWBot.Domain.Entities.States;
+using DWBot.Domain.Repositories;
 
 namespace DWBot.Data.Repositories;
 
-internal class InMemoryStateRepository : IStateRepository
+public sealed class InMemoryStateRepository : IStateRepository
 {
     private static Dictionary<long, BaseState> data = new Dictionary<long, BaseState>();
 

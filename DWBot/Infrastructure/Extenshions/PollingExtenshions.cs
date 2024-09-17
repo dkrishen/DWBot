@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
-namespace DWBot.Infrastructure.Extensions;
+namespace DWBot.Infrastructure.Extenshions;
 
 public static class PollingExtensions
 {

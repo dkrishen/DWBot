@@ -1,8 +1,8 @@
-﻿namespace DWBot.Services.StateMachine.States;
+﻿namespace DWBot.Domain.Entities.States;
 
-internal class AutomationState : BaseState
+public sealed class SupportState : BaseState
 {
-    public override string Description => "automation";
+    public override string Description => "We can help you with supporting of your app!";
 
     protected override IEnumerable<Type> GetTransitions() =>
     [

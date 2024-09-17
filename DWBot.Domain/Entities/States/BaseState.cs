@@ -1,6 +1,6 @@
-﻿namespace DWBot.Services.StateMachine.States;
+﻿namespace DWBot.Domain.Entities.States;
 
-internal abstract class BaseState
+public abstract class BaseState
 {
     public HashSet<Type> Transitions { get; } = [];
     public abstract string Description { get; }

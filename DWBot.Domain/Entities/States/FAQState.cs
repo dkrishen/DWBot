@@ -1,6 +1,6 @@
-﻿namespace DWBot.Services.StateMachine.States;
+﻿namespace DWBot.Domain.Entities.States;
 
-internal sealed class FAQState : BaseState
+public sealed class FAQState : BaseState
 {
     public override string Description => "fack you";
 

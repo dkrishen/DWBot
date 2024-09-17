@@ -1,8 +1,8 @@
-﻿namespace DWBot.Services.StateMachine.States;
+﻿namespace DWBot.Domain.Entities.States;
 
-internal sealed class DesktopState : BaseState
+public sealed class BotsState : BaseState
 {
-    public override string Description => "desktop";
+    public override string Description => "bot";
 
     protected override IEnumerable<Type> GetTransitions() =>
     [

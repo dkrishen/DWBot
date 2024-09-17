@@ -1,6 +1,6 @@
-﻿namespace DWBot.Services.StateMachine.States;
+﻿namespace DWBot.Domain.Entities.States;
 
-internal sealed class SoftwareDevelopmentState : BaseState
+public sealed class SoftwareDevelopmentState : BaseState
 {
     public override string Description => "software";
 

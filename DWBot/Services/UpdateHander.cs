@@ -1,5 +1,6 @@
-﻿using DWBot.Data.Repositories;
-using DWBot.Services.StateMachine;
+﻿using DWBot.Domain.Entities;
+using DWBot.Domain.Repositories;
+using DWBot.Helpers;
 using Microsoft.Extensions.Logging;
 using Telegram.Bot;
 using Telegram.Bot.Exceptions;

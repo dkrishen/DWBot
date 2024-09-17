@@ -1,6 +1,6 @@
-﻿using DWBot.Services.StateMachine.States;
+﻿using DWBot.Domain.Entities.States;
 
-namespace DWBot.Services.StateMachine;
+namespace DWBot.Helpers;
 
 internal static class CommandMapper
 {

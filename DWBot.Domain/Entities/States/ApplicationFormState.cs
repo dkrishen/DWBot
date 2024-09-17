@@ -1,6 +1,6 @@
-﻿namespace DWBot.Services.StateMachine.States;
+﻿namespace DWBot.Domain.Entities.States;
 
-internal sealed class ApplicationFormState : BaseState
+public sealed class ApplicationFormState : BaseState
 {
     public override string Description => "application form";
 

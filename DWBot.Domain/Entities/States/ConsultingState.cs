@@ -1,6 +1,6 @@
-﻿namespace DWBot.Services.StateMachine.States;
+﻿namespace DWBot.Domain.Entities.States;
 
-internal sealed class ConsultingState : BaseState
+public sealed class ConsultingState : BaseState
 {
     public override string Description => "consalting state";
 
