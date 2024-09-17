@@ -4,6 +4,7 @@ using DWBot.Models;
 using DWBot.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Serilog;
 using Telegram.Bot;
 
 IHost host = Host.CreateDefaultBuilder(args)
@@ -11,6 +12,8 @@ IHost host = Host.CreateDefaultBuilder(args)
     {
         services.Configure<BotConfiguration>(
             context.Configuration.GetSection(BotConfiguration.Configuration));
+
+        services.AddSerilog(asdf => asdf.ReadFrom.Configuration(context.Configuration));
 
         services.AddHttpClient("telegram_bot_client")
                 .AddTypedClient<ITelegramBotClient>((httpClient, sp) =>
