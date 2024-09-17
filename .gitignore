@@ -5,6 +5,9 @@ project.lock.json
 *.pyc
 nupkg/
 
+# Custom Files
+appsettings.Development.json
+
 # Visual Studio Code
 .vscode/
 

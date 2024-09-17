@@ -20,7 +20,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="appsetting.json">
+    <None Update="appsettings.Development.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="appsettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

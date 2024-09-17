@@ -1,0 +1,13 @@
+{
+  "profiles": {
+    "DWBot": {
+      "commandName": "Project"
+    },
+    "Dev": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}
