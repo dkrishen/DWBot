@@ -1,5 +1,6 @@
 ﻿using DWBot.Data.Repositories;
 using DWBot.Domain.Repositories;
+using DWBot.Infrastructure.Extenshions;
 using DWBot.Infrastructure.Options;
 using DWBot.Services;
 using Microsoft.Extensions.DependencyInjection;
