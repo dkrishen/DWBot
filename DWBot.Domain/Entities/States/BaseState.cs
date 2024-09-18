@@ -4,6 +4,8 @@ public abstract class BaseState
 {
     public HashSet<Type> Transitions { get; } = [];
     public abstract string Description { get; }
+    public abstract (string, string) ButtonConfig { get; }
+    public abstract string MenuConfig { get; }
 
     public BaseState()
     {
@@ -19,17 +21,18 @@ public abstract class BaseState
         }
     }
 
-    public abstract void OnEntry();
-    public abstract void OnExit();
+    public virtual void OnEntry() { }
+    public virtual void OnExit() { }
     protected abstract IEnumerable<Type> GetTransitions();
 
-    public List<string> GetMenu()
+    public List<(string, string)> GetMenu()
     {
-        var list = Transitions
-            .Select(stateType => stateType.Name.Replace("State", ""))
+        var buttonConfigs = Transitions
+            .Select(stateType => (BaseState)Activator.CreateInstance(stateType))
+            .Select(state => state.ButtonConfig)
             .ToList();
 
-        return list;
+        return buttonConfigs;
     }
 
     public string GetMessage() => Description;

@@ -74,7 +74,7 @@ internal class UpdateHandler : IUpdateHandler
             await _stateRepository.SetUserStateAsync(chatId, stateMachine.CurrentState);
 
             var menu = stateMachine.CurrentState.GetMenu();
-            var buttons = menu.Select(option => new List<InlineKeyboardButton>() { InlineKeyboardButton.WithCallbackData(option, $"/{option}") }).ToList();
+            var buttons = menu.Select(option => new List<InlineKeyboardButton>() { InlineKeyboardButton.WithCallbackData(option.Item1, option.Item2) }).ToList();
             var keyboard = new InlineKeyboardMarkup(buttons);
 
             await _botClient.SendTextMessageAsync(
@@ -84,7 +84,7 @@ internal class UpdateHandler : IUpdateHandler
 
             await _botClient.SendTextMessageAsync(
                 chatId,
-                text: "Choose",
+                text: stateMachine.CurrentState.MenuConfig,
                 replyMarkup: keyboard,
                 cancellationToken: cancellationToken);
         }

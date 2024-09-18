@@ -2,13 +2,13 @@
 
 public sealed class NoneState : BaseState
 {
-    public override string Description => "none";
+    public override string Description => "Кажется, я не знаю такой команды 👀";
+    public override (string, string) ButtonConfig
+        => ("", "/start");
+    public override string MenuConfig => "Назад:";
 
     protected override IEnumerable<Type> GetTransitions() =>
     [
         typeof(StartState),
     ];
-
-    public override void OnEntry() { }
-    public override void OnExit() { }
 }
