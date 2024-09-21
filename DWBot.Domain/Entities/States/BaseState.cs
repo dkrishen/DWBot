@@ -2,6 +2,7 @@
 
 public abstract class BaseState
 {
+    public abstract Guid Id { get; }
     public HashSet<Type> Transitions { get; } = [];
     public abstract string Description { get; }
     public abstract (string, string) ButtonConfig { get; }

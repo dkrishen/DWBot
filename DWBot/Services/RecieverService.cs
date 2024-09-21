@@ -1,4 +1,4 @@
-﻿using DWBot.Infrastructure.Abstract;
+﻿using DWBot.Abstract;
 using Microsoft.Extensions.Logging;
 using Telegram.Bot;
 

@@ -4,7 +4,7 @@ using Telegram.Bot;
 using Telegram.Bot.Polling;
 using Telegram.Bot.Types.Enums;
 
-namespace DWBot.Infrastructure.Abstract;
+namespace DWBot.Abstract;
 
 /// <summary>
 /// An abstract class to compose Receiver Service and Update Handler classes
