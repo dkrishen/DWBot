@@ -3,20 +3,37 @@ using DWBot.Infrastructure.Extenshions;
 using DWBot.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Serilog;
 
-IHost host = Host.CreateDefaultBuilder(args)
-    .ConfigureServices((context, services) =>
-    {
-        services.RegisterInfrastructureLayerDependencies(context);
-        services.RegisterDataLayerDependencies();
+try
+{
+    Log.Logger = new LoggerConfiguration()
+        .MinimumLevel.Debug()
+        .WriteTo.Console()
+        .CreateBootstrapLogger();
 
-        services.AddScoped<UpdateHandler>();
-        services.AddScoped<ReceiverService>();
+    IHost host = Host.CreateDefaultBuilder(args)
+        .ConfigureServices((context, services) =>
+        {
+            services.RegisterInfrastructureLayerDependencies(context);
+            services.RegisterDataLayerDependencies();
 
-        services.AddHostedService<PollingService>();
-    })
-    .Build();
+            services.AddScoped<UpdateHandler>();
+            services.AddScoped<ReceiverService>();
 
-host.ExecuteDataLayerInitializationActions();
+            services.AddHostedService<PollingService>();
+        })
+        .Build();
 
-await host.RunAsync();
+    host.ExecuteDataLayerInitializationActions();
+
+    await host.RunAsync();
+}
+catch (Exception ex)
+{
+    Log.Error(ex, "Unhandled exception occured during the app startup.");
+}
+finally
+{
+    Log.CloseAndFlush();
+}
