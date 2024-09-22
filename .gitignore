@@ -45,3 +45,4 @@ bld/
 msbuild.log
 msbuild.err
 msbuild.wrn
+DWBot/database/

@@ -1,0 +1,21 @@
+version: '3.4'
+
+services:
+  sqlite3:
+    image: nouchka/sqlite3:latest
+    stdin_open: true
+    tty: true
+    volumes:
+      - ./db:/root/db/
+    restart: always
+  dwbot:
+    image: ${DOCKER_REGISTRY-}dwbot
+    build:
+      context: .
+      dockerfile: DWBot/Dockerfile
+    depends_on:
+      - sqlite3
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - BotConfiguration__BotToken=$BOTTOKEN
+    restart: always
