@@ -13,6 +13,7 @@ public sealed class StartState : BaseState
         typeof(SoftwareDevelopmentState),
         typeof(DesingState),
         typeof(ConsultingState),
+        typeof(TranslationState),
         typeof(SupportState),
         typeof(PriceState),
         typeof(FAQState),
