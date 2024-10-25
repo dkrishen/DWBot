@@ -63,28 +63,30 @@ internal class UpdateHandler : IUpdateHandler
         if (message is not { } messageText)
             return;
 
-        var newState = CommandMapper.MapToState(message);
-        //var state = await _stateRepository.GetUserStateAsync(message.From?.Id);
-        var currentState = await _stateRepository.GetUserStateAsync(chatId);
-        //await await _stateRepository.SetUserStateAsync(message.From?.Id, state);
-        var stateMachine = new BotStateMachine(currentState);
-        var isStateUpdated = stateMachine.MoveTo(newState);
-        if (isStateUpdated)
+        var currentState = await _stateRepository.GetUserStateAsync(chatId, cancellationToken);
+        var newStateType = CommandMapper.MapToState(message);
+        var newState = BotStateHelper.TransitTo(currentState, newStateType);
+        
+        if (newState is not null)
         {
-            await _stateRepository.SetUserStateAsync(chatId, stateMachine.CurrentState);
+            await _stateRepository.SetUserStateAsync(chatId, newState, cancellationToken);
 
-            var menu = stateMachine.CurrentState.GetMenu();
-            var buttons = menu.Select(option => new List<InlineKeyboardButton>() { InlineKeyboardButton.WithCallbackData(option.Item1, option.Item2) }).ToList();
+            var buttons = newState.GetMenu()
+                .Select(option => new List<InlineKeyboardButton>
+                {
+                    InlineKeyboardButton.WithCallbackData(option.Item1, option.Item2)
+                })
+                .ToList();
             var keyboard = new InlineKeyboardMarkup(buttons);
 
             await _botClient.SendTextMessageAsync(
                 chatId,
-                text: stateMachine.CurrentState.GetMessage(),
+                text: newState.GetMessage(),
                 cancellationToken: cancellationToken);
 
             await _botClient.SendTextMessageAsync(
                 chatId,
-                text: stateMachine.CurrentState.MenuConfig,
+                text: newState.MenuConfig,
                 replyMarkup: keyboard,
                 cancellationToken: cancellationToken);
         }
