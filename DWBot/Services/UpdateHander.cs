@@ -1,6 +1,6 @@
-﻿using DWBot.Domain.Entities;
+﻿using DWBot.Domain;
+using DWBot.Domain.Entities;
 using DWBot.Domain.Repositories;
-using DWBot.Helpers;
 using Microsoft.Extensions.Logging;
 using Telegram.Bot;
 using Telegram.Bot.Exceptions;
@@ -71,7 +71,9 @@ internal class UpdateHandler : IUpdateHandler
         {
             await _stateRepository.SetUserStateAsync(chatId, newState, cancellationToken);
 
-            var buttons = newState.GetMenu()
+            var view = newState.GetView();
+
+            var buttons = view.GetMenu()
                 .Select(option => new List<InlineKeyboardButton>
                 {
                     InlineKeyboardButton.WithCallbackData(option.Item1, option.Item2)
@@ -81,12 +83,12 @@ internal class UpdateHandler : IUpdateHandler
 
             await _botClient.SendTextMessageAsync(
                 chatId,
-                text: newState.GetMessage(),
+                text: view.Message,
                 cancellationToken: cancellationToken);
 
             await _botClient.SendTextMessageAsync(
                 chatId,
-                text: newState.MenuConfig,
+                text: view.MenuConfig,
                 replyMarkup: keyboard,
                 cancellationToken: cancellationToken);
         }

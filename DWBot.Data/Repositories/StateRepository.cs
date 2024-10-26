@@ -18,7 +18,7 @@ internal sealed class StateRepository : IStateRepository
             new ChatWithManagerState(),
             new ConsultingState(),
             new PriceState(),
-            new DesingState(),
+            new DesignState(),
             new DesktopState(),
             new FAQState(),
             new NoneState(),
