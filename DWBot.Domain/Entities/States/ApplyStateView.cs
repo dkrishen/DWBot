@@ -6,6 +6,10 @@ public sealed class ApplyStateView : BaseView
     {
     }
 
-    public override string Message => "Оставьте заявку на заказ 📝\r\n\r\nhttps://forms.gle/uv62gVsAmNNdk3iUA";
+    public override string Message => """
+                                      Оставьте заявку на заказ 📝
+                                      
+                                      https://forms.gle/uv62gVsAmNNdk3iUA
+                                      """;
     public override string MenuConfig => "Спасибо! Мы свяжемся с вами в течение 24 часов.";
 }
