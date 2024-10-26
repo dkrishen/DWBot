@@ -73,24 +73,7 @@ internal class UpdateHandler : IUpdateHandler
 
             var view = newState.GetView();
 
-            var buttons = view.GetMenu()
-                .Select(option => new List<InlineKeyboardButton>
-                {
-                    InlineKeyboardButton.WithCallbackData(option.Item1, option.Item2)
-                })
-                .ToList();
-            var keyboard = new InlineKeyboardMarkup(buttons);
-
-            await _botClient.SendTextMessageAsync(
-                chatId,
-                text: view.Message,
-                cancellationToken: cancellationToken);
-
-            await _botClient.SendTextMessageAsync(
-                chatId,
-                text: view.MenuConfig,
-                replyMarkup: keyboard,
-                cancellationToken: cancellationToken);
+            await RenderView(chatId, view, cancellationToken);
         }
         else
         {
@@ -99,6 +82,28 @@ internal class UpdateHandler : IUpdateHandler
                 text: "sorry, i don't know what to do...",
                 cancellationToken: cancellationToken);
         }
+    }
+
+    private async Task RenderView(long chatId, IView view, CancellationToken cancellationToken)
+    {
+        var buttons = view.GetMenu()
+            .Select(option => new List<InlineKeyboardButton>
+            {
+                InlineKeyboardButton.WithCallbackData(option.Item1, option.Item2)
+            })
+            .ToList();
+        var keyboard = new InlineKeyboardMarkup(buttons);
+
+        await _botClient.SendTextMessageAsync(
+            chatId,
+            text: view.Message,
+            cancellationToken: cancellationToken);
+
+        await _botClient.SendTextMessageAsync(
+            chatId,
+            text: view.MenuConfig,
+            replyMarkup: keyboard,
+            cancellationToken: cancellationToken);
     }
 
     private async Task BotOnMessageReceived(Message message, CancellationToken cancellationToken)
